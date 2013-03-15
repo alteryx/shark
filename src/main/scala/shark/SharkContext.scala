@@ -76,7 +76,9 @@ class SharkContext(
     if (proc.isInstanceOf[Driver]) {
       val driver: Driver =
         if (SharkConfVars.getVar(hiveconf, SharkConfVars.EXEC_MODE) == "shark") {
-          new SharkDriver(hiveconf)
+          val newDriver = new SharkDriver(hiveconf)
+          newDriver.setMaxRows(Int.MaxValue)
+          newDriver
         } else {
           proc.asInstanceOf[Driver]
         }
@@ -106,6 +108,7 @@ class SharkContext(
     SparkEnv.set(sparkEnv)
     SessionState.start(sessionState)
     val driver = new SharkDriver(hiveconf)
+    driver.setMaxRows(Int.MaxValue)
     try {
       driver.init()
       driver.tableRdd(cmd)
