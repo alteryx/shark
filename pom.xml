@@ -5,7 +5,7 @@
   <artifactId>shark</artifactId>
   <packaging>jar</packaging>
   <description>shark</description>
-  <version>0.3.0-csd-100-SNAPSHOT</version>
+  <version>0.3.0-candidate-csd-1</version>
   <name>shark</name>
   <organization>
     <name>edu.berkeley.cs.amplab</name>
@@ -16,7 +16,7 @@
     <encoding>UTF-8</encoding>
     <scala.version>2.9.3</scala.version>
     <hive.version>0.9.0-csd-8</hive.version>
-    <spark.version>0.8.0-csd-2</spark.version>
+    <spark.version>0.8.0-candidate-csd-1</spark.version>
     <cdh.version>4.1.2</cdh.version>
     <java.version>1.5</java.version>
     <hbase.version>0.94.5-csd-23</hbase.version>
