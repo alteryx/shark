@@ -15,18 +15,11 @@
     <maven.compiler.target>1.7</maven.compiler.target>
     <encoding>UTF-8</encoding>
     <scala.version>2.9.3</scala.version>
-    <hive.version>0.9.0-csd-12</hive.version>
-    <spark.version>0.8.0-candidate-csd-5</spark.version>
+    <hive.version>0.9.0-csd-14</hive.version>
+    <spark.version>0.8.0-candidate-csd-6</spark.version>
     <cdh.version>4.1.2</cdh.version>
     <java.version>1.5</java.version>
-    <hbase.version>0.94.5-csd-26</hbase.version>
-
-    <deb.pkg.name>shark-${classifier}</deb.pkg.name>
-    <deb.install.path>/usr/share/shark-${classifier}</deb.install.path>
-    <deb.user>root</deb.user>
-    <deb.hive.dependency>${hive.version}</deb.hive.dependency>
-
-    <ql.build.path>${hive.dev.home}/build/ql</ql.build.path>
+    <hbase.version>0.94.5-csd-28</hbase.version>
 
     <deb.pkg.name>shark-${classifier}</deb.pkg.name>
     <deb.install.path>/usr/share/shark-${classifier}</deb.install.path>
@@ -217,7 +210,7 @@
     <dependency>
       <groupId>org.tachyonproject</groupId>
       <artifactId>tachyon</artifactId>
-      <version>0.2.2-csd-1</version>
+      <version>0.2.1-csd-2</version>
     </dependency>
 
     <!-- Testing -->
@@ -225,7 +218,7 @@
       <!-- This is omitted from the shaded jar -->
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <version>1.6.1</version>
+      <version>1.7.5</version>
       <scope>test</scope>
     </dependency>
     <dependency>
