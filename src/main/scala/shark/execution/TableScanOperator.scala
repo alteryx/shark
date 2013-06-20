@@ -25,8 +25,14 @@ import org.apache.hadoop.mapred.{FileInputFormat, InputFormat, JobConf}
 import org.apache.hadoop.hive.conf.HiveConf
 import org.apache.hadoop.hive.metastore.api.Constants.META_TABLE_PARTITION_COLUMNS
 import org.apache.hadoop.hive.ql.exec.{TableScanOperator => HiveTableScanOperator}
+<<<<<<< HEAD
 import org.apache.hadoop.hive.ql.exec.{MapSplitPruning, Utilities}
 import org.apache.hadoop.hive.ql.metadata.{Partition, Table}
+=======
+import org.apache.hadoop.hive.ql.exec.Utilities
+import org.apache.hadoop.hive.ql.metadata.Partition
+import org.apache.hadoop.hive.ql.metadata.Table
+>>>>>>> c007f2b1aa902d0e1bb6e61b4024190420133cea
 import org.apache.hadoop.hive.ql.plan.{PlanUtils, PartitionDesc, TableDesc}
 import org.apache.hadoop.hive.serde2.objectinspector.{ObjectInspector, ObjectInspectorFactory,
   StructObjectInspector}
@@ -39,7 +45,12 @@ import shark.memstore2.{CacheType, TablePartition, TablePartitionStats}
 import shark.tachyon.TachyonException
 
 import spark.RDD
+<<<<<<< HEAD
 import spark.rdd.{PartitionPruningRDD, UnionRDD}
+=======
+import spark.EnhancedRDD._
+import spark.rdd.UnionRDD
+>>>>>>> c007f2b1aa902d0e1bb6e61b4024190420133cea
 import org.apache.hadoop.hive.ql.io.HiveInputFormat
 
 

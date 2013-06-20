@@ -107,6 +107,7 @@ fi
 
 SPARK_CLASSPATH+=":$SHARK_HOME/target/scala-$SCALA_VERSION/test-classes"
 
+
 # Use Hadoop configuration from $HADOOP_CONF_DIR or if it is not set from $HADOOP_HOME/conf.
 if [ -z "${HADOOP_CONF_DIR:-}" ]; then
   if [ -z "${HADOOP_HOME:-}" ] ; then
