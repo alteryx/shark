@@ -37,9 +37,9 @@ import org.apache.hadoop.hive.serde2.{Deserializer, SerDe}
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils
 import org.apache.hadoop.io.BytesWritable
 
-import shark.execution.{HiveTopOperator, ReduceKey}
+import shark.execution.{RDDSizeEstimator, HiveTopOperator, ReduceKey}
 import spark.{Aggregator, HashPartitioner, RDD}
-import spark.rdd.ShuffledRDD
+import spark.rdd.{HadoopRDD, ShuffledRDD}
 import spark.SparkContext._
 
 
@@ -183,9 +183,26 @@ with HiveTopOperator {
   }
 
   override def preprocessRdd(rdd: RDD[_]): RDD[_] = {
-    var numReduceTasks = hconf.getIntVar(HiveConf.ConfVars.HADOOPNUMREDUCERS)
+    var numReduceTasks = Math.max(hconf.getIntVar(HiveConf.ConfVars.HADOOPNUMREDUCERS), 1)
+
     // If we have no keys, it needs a total aggregation with 1 reducer.
-    if (numReduceTasks < 1 || conf.getKeys.size == 0) numReduceTasks = 1
+    if (conf.getKeys.size == 0) {
+      numReduceTasks = 1
+    } else {
+      val bytesPerReducer = hconf.getLongVar(HiveConf.ConfVars.BYTESPERREDUCER)
+      if (bytesPerReducer > 0) {
+        val estimatedInputDataSize = RDDSizeEstimator.estimateInputDataSize(rdd)
+        if (estimatedInputDataSize > 0) {
+          val maxReducers = hconf.getIntVar(HiveConf.ConfVars.MAXREDUCERS)
+          numReduceTasks = Math.min(
+            (estimatedInputDataSize + bytesPerReducer - 1) / bytesPerReducer, maxReducers
+          ).toInt
+          logInfo("Estimated input data size " + estimatedInputDataSize +
+              ", using " + numReduceTasks + " reducers (" + bytesPerReducer + " bytes per " +
+              "reducer but no more than " + maxReducers + " reducers)")
+        }
+      }
+    }
 
     // We don't use Spark's groupByKey to avoid map-side combiners in Spark.
     //rdd.asInstanceOf[RDD[(Any, Any)]].groupByKey(numReduceTasks)
