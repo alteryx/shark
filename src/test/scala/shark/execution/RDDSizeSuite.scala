@@ -46,7 +46,12 @@ class RDDSizeSuite extends FunSuite with BeforeAndAfterAll with Assertions {
 
   test("rdd size") {
     val rdd = sc.sql2rdd("select * from test")
-    expectResult(5686)(RDDSizeEstimator.estimateInputDataSize(rdd))
+    val rddSize = RDDSizeEstimator.estimateInputDataSize(rdd)
+    val minExpected = 5686
+    val maxExpected = 5868
+    assert(minExpected <= rddSize && rddSize <= maxExpected,
+           "Expected RDD size between " + minExpected + " and " + maxExpected + " but was " +
+           rddSize)
   }
 
 }
