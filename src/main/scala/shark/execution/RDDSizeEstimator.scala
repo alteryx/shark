@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 The Regents of The University California.
+ * Copyright (C) 2013 The Regents of The University California.
  * All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 package shark.execution
 
 import com.google.common.cache.{CacheLoader, CacheBuilder}
+import java.io.IOException
 import java.net.URI
 import java.util.concurrent.TimeUnit
 import org.apache.hadoop.fs.{Path, FileSystem}
@@ -24,7 +25,7 @@ import org.apache.hadoop.conf.Configuration
 import spark.RDD
 import spark.rdd.HadoopRDD
 import spark.Logging
-import java.io.IOException
+import scala.collection.mutable
 
 object RDDSizeEstimator extends Logging {
   private[this] val hadoopConf = new Configuration()
@@ -48,15 +49,24 @@ object RDDSizeEstimator extends Logging {
     )
 
   def estimateInputDataSize(rdd: RDD[_]): Long = {
-    rdd match {
-      case hadoopRDD: HadoopRDD[_, _] =>
-        val conf = hadoopRDD.getConf
-        val inputDir = conf.get("mapred.input.dir")
-        if (inputDir == null) 0 else dirSizeCache.get(inputDir)
-      case _ => rdd.dependencies.view.map {
-        dependency => estimateInputDataSize(dependency.rdd)
-      }.sum
+    val visited = new mutable.HashSet[RDD[_]]
+
+    def visit(r: RDD[_]): Long = {
+      if (!visited(r)) {
+        visited += r
+        rdd match {
+          case hadoopRDD: HadoopRDD[_, _] =>
+            val conf = hadoopRDD.getConf
+            val inputDir = conf.get("mapred.input.dir")
+            if (inputDir == null) 0 else dirSizeCache.get(inputDir)
+          case _ => rdd.dependencies.view.map {
+            dependency => estimateInputDataSize(dependency.rdd)
+          }.sum
+        }
+      } else 0
     }
+
+    visit(rdd)
   }
 
 }
